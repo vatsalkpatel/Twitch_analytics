@@ -14,7 +14,7 @@ INDENT = 2
 def get_response(query):
     AutCall = requests.post(url=AutURL, params=AutParams)
     data1 = AutCall.json()
-    print(data1)
+    # print(data1)
     access_token = data1["access_token"]
     HEADERS = {'Client-ID': CLIENT_ID, 'Authorization': "Bearer " + access_token}
     current_url  = Base_url + query
@@ -35,7 +35,7 @@ def get_user_query(user_login):
     return "users?login={0}".format(user_login)
 
 def get_user_videos_query(user_id):
-    return 'videos?user_id={0}&first=5'.format(user_id)
+    return 'videos?user_id={0}'.format(user_id)
 
-def get_games_query(user_login):
-    return 'streams?user_login={0}'.format(user_login)
+def get_games_query():
+    return 'games/top'
