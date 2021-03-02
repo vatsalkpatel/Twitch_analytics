@@ -14,10 +14,24 @@ INDENT = 2
 def get_response(query):
     AutCall = requests.post(url=AutURL, params=AutParams)
     data1 = AutCall.json()
-    # print(data1)
+    print(data1)
     access_token = data1["access_token"]
     HEADERS = {'Client-ID': CLIENT_ID, 'Authorization': "Bearer " + access_token}
     current_url  = Base_url + query
+    response = requests.get(url=current_url, headers=HEADERS)
+    return response
+
+# get response from twitch API call for editors read
+def get_response_editor(query):
+    AutParams_1 = AutParams
+    AutParams_1["scope"] = ["channel:read:editors"]
+    AutCall = requests.post(url=AutURL, params=AutParams_1)
+    data1 = AutCall.json()
+    print(data1)
+    access_token = data1["access_token"]
+    HEADERS = {'Client-ID': CLIENT_ID, 'Authorization': "Bearer " + access_token}
+    current_url  = Base_url + query
+    print(current_url)
     response = requests.get(url=current_url, headers=HEADERS)
     return response
 
@@ -39,3 +53,9 @@ def get_user_videos_query(user_id):
 
 def get_games_query():
     return 'games/top'
+
+def get_channel_info_query(user_id):
+    return 'channels?broadcaster_id={0}'.format(user_id)
+
+def get_channel_team_info_query(user_id):
+    return 'channels/editors?broadcaster_id={0}'.format(user_id)

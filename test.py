@@ -13,20 +13,23 @@ for i in range(1,2,1):
 print(full_data.shape)
 user_details = []
 video_details = []
+channel_details = []
+channel_team_details = []
 for user_login in full_data.Channel: 
     print(user_login)
-    # user_login = "ninja"
+    user_login = "ninja"
     try:
         print("Users Query")
         # ...............USER QUERY..............................
         query = twitch_integration.get_user_query(user_login)
         response = twitch_integration.get_response(query)
         #print for debugging
-        twitch_integration.print_response(response) 
+        # twitch_integration.print_response(response) 
         response = response.json()
+        print(response)
         user_details.append(response["data"][0])
         data = response["data"][0]["id"]
-        print(data)
+        # print(data)
 
         # ......................................................
 
@@ -38,22 +41,51 @@ for user_login in full_data.Channel:
         # twitch_integration.print_response(response) 
         # # ......................................................
 
-        print("USer video query")
+        print("User channel query")
+        # ......................................................
+        query = twitch_integration.get_channel_info_query(data)
+        response = twitch_integration.get_response(query)
+        response = response.json()
+        user_details[-1]["channel_info"] = response["data"]
+        #print for debugging
+        # twitch_integration.print_response(response) 
+        # ......................................................
+
+
+        # print("User channel team query")
+        # # ......................................................
+        # query = twitch_integration.get_channel_team_info_query(data)
+        # response = twitch_integration.get_response_editor(query)
+        # response = response.json()
+        # print(response)
+        # channel_team_details = channel_team_details + response["data"]
+        # #print for debugging
+        # # twitch_integration.print_response(response) 
+        # # ......................................................
+
+
+
+        print("User video query")
         # ......................................................
         query = twitch_integration.get_user_videos_query(data)
         response = twitch_integration.get_response(query)
-        response = response.json()
+        response= response.json()
         video_details = video_details + response["data"]
-        # print(video_details)
         #print for debugging
-        twitch_integration.print_response(response) 
+        # twitch_integration.print_response(response) 
         # ......................................................
+
+
     except:
         print("An exception occurred")
-# print(user_details)
+# Stop here ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+print(user_details)
 print(video_details)
 csv_file = "Users.csv"
-csv_columns = ['id','login','display_name','type','broadcaster_type', 'description', 'profile_image_url','offline_image_url','view_count','created_at']
+csv_columns = ['id','login','display_name','type','broadcaster_type', 'description', 'profile_image_url','offline_image_url','view_count','created_at','channel_info']
 try:
     with open(csv_file, 'w',encoding="utf-8",errors="surrogateescape") as csvfile:
         writer = csv.DictWriter(csvfile, fieldnames=csv_columns)
@@ -72,3 +104,16 @@ try:
             writer.writerow(row)
 except IOError:
     pass
+
+
+
+
+"""
+In Users table, 
+1) if a user's content is "Mature" or not, 
+2) language info (I know we have it in Video Table), 
+3) Team information (a user can join a Team), etc. 
+
+In Video table, category of game (e.g., Just Chatting, Minecraft, Fortnite, etc.). 
+
+"""
